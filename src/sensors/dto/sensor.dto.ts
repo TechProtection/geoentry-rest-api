@@ -10,7 +10,7 @@ export class CreateSensorDto {
   @ApiProperty({ description: 'Tipo de datos del sensor' })
   @IsString()
   @IsNotEmpty()
-  dataType: string;
+  data_type: string;
 
   @ApiProperty({ description: 'Unidad de medida' })
   @IsString()
@@ -20,7 +20,7 @@ export class CreateSensorDto {
   @ApiProperty({ description: 'ID del dispositivo al que pertenece' })
   @IsUUID()
   @IsNotEmpty()
-  deviceId: string;
+  device_id: string;
 }
 
 export class UpdateSensorDto {
@@ -30,7 +30,7 @@ export class UpdateSensorDto {
 
   @ApiProperty({ description: 'Tipo de datos del sensor', required: false })
   @IsString()
-  dataType?: string;
+  data_type?: string;
 
   @ApiProperty({ description: 'Unidad de medida', required: false })
   @IsString()
@@ -38,5 +38,5 @@ export class UpdateSensorDto {
 
   @ApiProperty({ description: 'ID del dispositivo al que pertenece', required: false })
   @IsUUID()
-  deviceId?: string;
+  device_id?: string;
 }

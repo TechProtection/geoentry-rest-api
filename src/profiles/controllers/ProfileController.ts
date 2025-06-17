@@ -33,7 +33,6 @@ export class UserController {
   async getUserByEmail(@Param('email') email: string): Promise<User> {
     return await this.userService.getUserByEmail(email);
   }
-
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo usuario' })
   @ApiResponse({ status: 201, description: 'Usuario creado exitosamente', type: User })
@@ -42,15 +41,13 @@ export class UserController {
   async createUser(@Body() userDto: CreateUserDto): Promise<User> {
     const userData = {
       id: userDto.id,
-      fullName: userDto.fullName,
+      full_name: userDto.full_name,
       email: userDto.email,
-      avatarUrl: userDto.avatarUrl,
-      role: userDto.role,
-      location: userDto.locationId ? { id: userDto.locationId } as any : undefined
+      avatar_url: userDto.avatar_url,
+      role: userDto.role
     };
     return await this.userService.createUser(userData);
   }
-
   @Put(':id')
   @ApiOperation({ summary: 'Actualizar un usuario' })
   @ApiParam({ name: 'id', description: 'ID del usuario' })
@@ -61,13 +58,10 @@ export class UserController {
     @Body() userDto: UpdateUserDto
   ): Promise<User> {
     const userData: any = {};
-    if (userDto.fullName) userData.fullName = userDto.fullName;
+    if (userDto.full_name) userData.full_name = userDto.full_name;
     if (userDto.email) userData.email = userDto.email;
-    if (userDto.avatarUrl !== undefined) userData.avatarUrl = userDto.avatarUrl;
+    if (userDto.avatar_url !== undefined) userData.avatar_url = userDto.avatar_url;
     if (userDto.role) userData.role = userDto.role;
-    if (userDto.locationId !== undefined) {
-      userData.location = userDto.locationId ? { id: userDto.locationId } : null;
-    }
     
     return await this.userService.updateUser(id, userData);
   }

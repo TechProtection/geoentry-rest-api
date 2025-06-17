@@ -39,27 +39,27 @@ export type Database = {
           created_at: string | null
           id: string
           name: string
+          profile_id: string
           type: string
-          user_id: string
         }
         Insert: {
           created_at?: string | null
           id?: string
           name: string
+          profile_id: string
           type: string
-          user_id: string
         }
         Update: {
           created_at?: string | null
           id?: string
           name?: string
+          profile_id?: string
           type?: string
-          user_id?: string
         }
         Relationships: [
           {
             foreignKeyName: "devices_user_id_fkey"
-            columns: ["user_id"]
+            columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -68,27 +68,47 @@ export type Database = {
       }
       locations: {
         Row: {
-          address: string | null
+          address: string
           created_at: string | null
           id: string
+          is_active: boolean
           latitude: number
           longitude: number
+          name: string
+          profile_id: string | null
+          radius: number
         }
         Insert: {
-          address?: string | null
+          address?: string
           created_at?: string | null
           id?: string
+          is_active?: boolean
           latitude: number
           longitude: number
+          name?: string
+          profile_id?: string | null
+          radius?: number
         }
         Update: {
-          address?: string | null
+          address?: string
           created_at?: string | null
           id?: string
+          is_active?: boolean
           latitude?: number
           longitude?: number
+          name?: string
+          profile_id?: string | null
+          radius?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "locations_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -97,7 +117,6 @@ export type Database = {
           email: string
           full_name: string
           id: string
-          location_id: string | null
           role: Database["public"]["Enums"]["user_role"] | null
           updated_at: string | null
         }
@@ -107,7 +126,6 @@ export type Database = {
           email: string
           full_name: string
           id: string
-          location_id?: string | null
           role?: Database["public"]["Enums"]["user_role"] | null
           updated_at?: string | null
         }
@@ -117,16 +135,68 @@ export type Database = {
           email?: string
           full_name?: string
           id?: string
-          location_id?: string | null
           role?: Database["public"]["Enums"]["user_role"] | null
           updated_at?: string | null
         }
+        Relationships: []
+      }
+      proximity_events: {
+        Row: {
+          created_at: string | null
+          device_id: string | null
+          distance: number
+          home_location_id: string
+          home_location_name: string
+          id: string
+          latitude: number
+          longitude: number
+          type: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          device_id?: string | null
+          distance: number
+          home_location_id: string
+          home_location_name: string
+          id?: string
+          latitude: number
+          longitude: number
+          type: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          device_id?: string | null
+          distance?: number
+          home_location_id?: string
+          home_location_name?: string
+          id?: string
+          latitude?: number
+          longitude?: number
+          type?: string
+          user_id?: string | null
+        }
         Relationships: [
           {
-            foreignKeyName: "profiles_location_id_fkey"
-            columns: ["location_id"]
+            foreignKeyName: "fk_proximity_events_device"
+            columns: ["device_id"]
+            isOneToOne: false
+            referencedRelation: "devices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_proximity_events_location"
+            columns: ["home_location_id"]
             isOneToOne: false
             referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_proximity_events_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

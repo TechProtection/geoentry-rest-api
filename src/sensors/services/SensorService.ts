@@ -40,17 +40,16 @@ export class SensorService {
 
     return data as any;
   }
-
   async createSensor(sensorData: Partial<Sensor>): Promise<Sensor> {
-    if (!sensorData.name || !sensorData.dataType || !sensorData.unit || !sensorData.device?.id) {
-      throw new Error('Missing required fields: name, dataType, unit, device');
+    if (!sensorData.name || !sensorData.data_type || !sensorData.unit || !sensorData.device_id) {
+      throw new Error('Missing required fields: name, data_type, unit, device_id');
     }
 
     const insertData: SensorInsert = {
       name: sensorData.name,
-      data_type: sensorData.dataType,
+      data_type: sensorData.data_type,
       unit: sensorData.unit,
-      device_id: sensorData.device.id,
+      device_id: sensorData.device_id,
     };
 
     const { data, error } = await supabase
@@ -70,9 +69,9 @@ export class SensorService {
     const updateData: SensorUpdate = {};
 
     if (sensorData.name) updateData.name = sensorData.name;
-    if (sensorData.dataType) updateData.data_type = sensorData.dataType;
+    if (sensorData.data_type) updateData.data_type = sensorData.data_type;
     if (sensorData.unit) updateData.unit = sensorData.unit;
-    if (sensorData.device?.id) updateData.device_id = sensorData.device.id;
+    if (sensorData.device_id) updateData.device_id = sensorData.device_id;
 
     const { error } = await supabase
       .from('sensors')

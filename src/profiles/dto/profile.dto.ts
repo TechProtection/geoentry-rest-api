@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsEmail, IsNotEmpty, IsUUID, IsOptional, IsEnum, IsUrl } from 'class-validator';
-import { Role } from '../models/ProfileRole';
+import { IsString, IsEmail, IsNotEmpty, IsUUID, IsOptional, IsIn, IsUrl } from 'class-validator';
+import { Database } from '../../types/supabase';
+
+type UserRole = Database['public']['Enums']['user_role'];
 
 export class CreateUserDto {
   @ApiProperty({ description: 'UUID del usuario de Supabase Auth' })
@@ -11,7 +13,7 @@ export class CreateUserDto {
   @ApiProperty({ description: 'Nombre completo del usuario' })
   @IsString()
   @IsNotEmpty()
-  fullName: string;
+  full_name: string;
 
   @ApiProperty({ description: 'Email único del usuario' })
   @IsEmail()
@@ -21,24 +23,19 @@ export class CreateUserDto {
   @ApiProperty({ description: 'URL del avatar del usuario', required: false })
   @IsOptional()
   @IsUrl()
-  avatarUrl?: string;
+  avatar_url?: string;
 
-  @ApiProperty({ description: 'Rol del usuario', enum: Role, required: false })
+  @ApiProperty({ description: 'Rol del usuario', enum: ['USER', 'ADMIN'], required: false })
   @IsOptional()
-  @IsEnum(Role)
-  role?: Role;
-
-  @ApiProperty({ description: 'ID de la ubicación del usuario', required: false })
-  @IsOptional()
-  @IsUUID()
-  locationId?: string;
+  @IsIn(['USER', 'ADMIN'])
+  role?: UserRole;
 }
 
 export class UpdateUserDto {
   @ApiProperty({ description: 'Nombre completo del usuario', required: false })
   @IsOptional()
   @IsString()
-  fullName?: string;
+  full_name?: string;
 
   @ApiProperty({ description: 'Email único del usuario', required: false })
   @IsOptional()
@@ -48,15 +45,10 @@ export class UpdateUserDto {
   @ApiProperty({ description: 'URL del avatar del usuario', required: false })
   @IsOptional()
   @IsUrl()
-  avatarUrl?: string;
+  avatar_url?: string;
 
-  @ApiProperty({ description: 'Rol del usuario', enum: Role, required: false })
+  @ApiProperty({ description: 'Rol del usuario', enum: ['USER', 'ADMIN'], required: false })
   @IsOptional()
-  @IsEnum(Role)
-  role?: Role;
-
-  @ApiProperty({ description: 'ID de la ubicación del usuario', required: false })
-  @IsOptional()
-  @IsUUID()
-  locationId?: string;
+  @IsIn(['USER', 'ADMIN'])
+  role?: UserRole;
 }

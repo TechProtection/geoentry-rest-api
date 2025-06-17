@@ -11,11 +11,11 @@ export class DeviceResponseDto {
   @ApiProperty({ description: 'Tipo de dispositivo' })
   type: string;
 
-  @ApiProperty({ description: 'Usuario propietario del dispositivo' })
-  user: User;
+  @ApiProperty({ description: 'Profile propietario del dispositivo' })
+  profile: User;
 
   @ApiProperty({ description: 'Fecha de creación' })
-  createdAt: Date;
+  created_at: string | null;
 }
 
 export class DeviceWithSensorsResponseDto extends DeviceResponseDto {
@@ -27,9 +27,9 @@ export class DeviceWithSensorsResponseDto extends DeviceResponseDto {
       properties: {
         id: { type: 'string' },
         name: { type: 'string' },
-        dataType: { type: 'string' },
+        data_type: { type: 'string' },
         unit: { type: 'string' },
-        createdAt: { type: 'string', format: 'date-time' }
+        created_at: { type: 'string', format: 'date-time' }
       }
     }
   })

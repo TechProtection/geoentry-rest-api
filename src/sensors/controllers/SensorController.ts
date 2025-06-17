@@ -33,7 +33,6 @@ export class SensorController {
   async getSensor(@Param('id') id: string): Promise<Sensor> {
     return await this.sensorService.getSensorById(id);
   }
-
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo sensor' })
   @ApiResponse({ status: 201, description: 'Sensor creado exitosamente', type: Sensor })
@@ -41,9 +40,9 @@ export class SensorController {
   async createSensor(@Body() sensorDto: CreateSensorDto): Promise<Sensor> {
     const sensorData = {
       name: sensorDto.name,
-      dataType: sensorDto.dataType,
+      data_type: sensorDto.data_type,
       unit: sensorDto.unit,
-      device: { id: sensorDto.deviceId } as any
+      device_id: sensorDto.device_id
     };
     return await this.sensorService.createSensor(sensorData);
   }
@@ -56,12 +55,11 @@ export class SensorController {
   async updateSensor(
     @Param('id') id: string,
     @Body() sensorDto: UpdateSensorDto
-  ): Promise<Sensor> {
-    const sensorData: any = {};
+  ): Promise<Sensor> {    const sensorData: any = {};
     if (sensorDto.name) sensorData.name = sensorDto.name;
-    if (sensorDto.dataType) sensorData.dataType = sensorDto.dataType;
+    if (sensorDto.data_type) sensorData.data_type = sensorDto.data_type;
     if (sensorDto.unit) sensorData.unit = sensorDto.unit;
-    if (sensorDto.deviceId) sensorData.device = { id: sensorDto.deviceId } as any;
+    if (sensorDto.device_id) sensorData.device_id = sensorDto.device_id;
     
     return await this.sensorService.updateSensor(id, sensorData);
   }

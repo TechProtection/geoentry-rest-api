@@ -33,9 +33,7 @@ export class LocationService {
     }
 
     return data as any;
-  }
-
-  async createLocation(locationData: Partial<Location>): Promise<Location> {
+  }  async createLocation(locationData: Partial<Location>): Promise<Location> {
     if (typeof locationData.latitude !== 'number' || typeof locationData.longitude !== 'number') {
       throw new Error('Missing required fields: latitude, longitude');
     }
@@ -43,7 +41,11 @@ export class LocationService {
     const insertData: LocationInsert = {
       latitude: locationData.latitude,
       longitude: locationData.longitude,
-      address: locationData.address || null,
+      name: locationData.name || 'Ubicación sin nombre',
+      address: locationData.address || 'Dirección no especificada',
+      radius: locationData.radius || 100, // radio por defecto de 100 metros
+      is_active: locationData.is_active !== undefined ? locationData.is_active : true,
+      profile_id: locationData.profile_id || null,
     };
 
     const { data, error } = await supabase
@@ -58,13 +60,16 @@ export class LocationService {
 
     return data as any;
   }
-
   async updateLocation(id: string, locationData: Partial<Location>): Promise<Location> {
     const updateData: LocationUpdate = {};
 
+    if (locationData.name !== undefined) updateData.name = locationData.name;
     if (typeof locationData.latitude === 'number') updateData.latitude = locationData.latitude;
     if (typeof locationData.longitude === 'number') updateData.longitude = locationData.longitude;
     if (locationData.address !== undefined) updateData.address = locationData.address;
+    if (typeof locationData.radius === 'number') updateData.radius = locationData.radius;
+    if (typeof locationData.is_active === 'boolean') updateData.is_active = locationData.is_active;
+    if (locationData.profile_id !== undefined) updateData.profile_id = locationData.profile_id;
 
     const { error } = await supabase
       .from('locations')

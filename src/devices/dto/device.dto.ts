@@ -12,10 +12,10 @@ export class CreateDeviceDto {
   @IsNotEmpty()
   type: string;
 
-  @ApiProperty({ description: 'ID del usuario propietario' })
+  @ApiProperty({ description: 'ID del profile propietario' })
   @IsUUID()
   @IsNotEmpty()
-  userId: string;
+  profile_id: string;
 }
 
 export class UpdateDeviceDto {
@@ -27,7 +27,7 @@ export class UpdateDeviceDto {
   @IsString()
   type?: string;
 
-  @ApiProperty({ description: 'ID del usuario propietario', required: false })
+  @ApiProperty({ description: 'ID del profile propietario', required: false })
   @IsUUID()
-  userId?: string;
+  profile_id?: string;
 }

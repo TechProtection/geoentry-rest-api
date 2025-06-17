@@ -1,8 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsOptional } from 'class-validator';
+import { Tables } from '../../types/supabase';
 import { User } from '../../profiles/models/ProfileModel';
 
-export class Device {
+type DeviceRow = Tables<'devices'>;
+
+export class Device implements DeviceRow {
   @ApiProperty({ description: 'ID único del dispositivo' })
   id: string;
 
@@ -14,9 +17,13 @@ export class Device {
   @IsString()
   type: string;
 
-  @ApiProperty({ description: 'Usuario propietario del dispositivo' })
-  user: User;
+  @ApiProperty({ description: 'ID del profile propietario' })
+  profile_id: string;
 
+  @ApiProperty({ description: 'Fecha de creación' })
+  created_at: string | null;
+
+  // Relaciones (no están en Supabase types, pero las necesitamos para el modelo)
   @ApiProperty({ 
     description: 'Sensores del dispositivo',
     type: 'array',
@@ -25,14 +32,11 @@ export class Device {
       properties: {
         id: { type: 'string' },
         name: { type: 'string' },
-        dataType: { type: 'string' },
+        data_type: { type: 'string' },
         unit: { type: 'string' },
-        createdAt: { type: 'string', format: 'date-time' }
+        created_at: { type: 'string', format: 'date-time' }
       }
     }
   })
-  sensors: any[];
-
-  @ApiProperty({ description: 'Fecha de creación' })
-  createdAt: Date;
+  sensors?: any[];
 }

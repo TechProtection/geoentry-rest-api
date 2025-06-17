@@ -8,13 +8,12 @@ type DeviceInsert = Database['public']['Tables']['devices']['Insert'];
 type DeviceUpdate = Database['public']['Tables']['devices']['Update'];
 
 @Injectable()
-export class DeviceService {
-  async getAllDevices(): Promise<Device[]> {
+export class DeviceService {  async getAllDevices(): Promise<Device[]> {
     const { data, error } = await supabase
       .from('devices')
       .select(`
         *,
-        user:profiles(*),
+        profile:profiles(*),
         sensors(*)
       `);
 
@@ -30,7 +29,7 @@ export class DeviceService {
       .from('devices')
       .select(`
         *,
-        user:profiles(*),
+        profile:profiles(*),
         sensors(*)
       `)
       .eq('id', id)
@@ -42,16 +41,15 @@ export class DeviceService {
 
     return data as any;
   }
-
   async createDevice(deviceData: Partial<Device>): Promise<Device> {
-    if (!deviceData.name || !deviceData.type || !deviceData.user?.id) {
-      throw new Error('Missing required fields: name, type, user');
+    if (!deviceData.name || !deviceData.type || !deviceData.profile_id) {
+      throw new Error('Missing required fields: name, type, profile_id');
     }
 
     const insertData: DeviceInsert = {
       name: deviceData.name,
       type: deviceData.type,
-      user_id: deviceData.user.id,
+      profile_id: deviceData.profile_id,
     };
 
     const { data, error } = await supabase
@@ -72,7 +70,7 @@ export class DeviceService {
 
     if (deviceData.name) updateData.name = deviceData.name;
     if (deviceData.type) updateData.type = deviceData.type;
-    if (deviceData.user?.id) updateData.user_id = deviceData.user.id;
+    if (deviceData.profile_id) updateData.profile_id = deviceData.profile_id;
 
     const { error } = await supabase
       .from('devices')

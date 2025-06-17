@@ -65,6 +65,16 @@ La documentación completa de la API está disponible en Swagger UI en:
 - `PUT /api/sensors/:id` - Actualizar sensor
 - `DELETE /api/sensors/:id` - Eliminar sensor
 
+### Eventos de Proximidad
+- `GET /api/proximity-events` - Obtener todos los eventos de proximidad
+- `GET /api/proximity-events/:id` - Obtener evento de proximidad por ID
+- `GET /api/proximity-events/user/:userId` - Obtener eventos por ID de usuario
+- `GET /api/proximity-events/device/:deviceId` - Obtener eventos por ID de dispositivo
+- `GET /api/proximity-events/location/:locationId` - Obtener eventos por ID de ubicación
+- `POST /api/proximity-events` - Crear nuevo evento de proximidad
+- `PUT /api/proximity-events/:id` - Actualizar evento de proximidad
+- `DELETE /api/proximity-events/:id` - Eliminar evento de proximidad
+
 ## Ejemplos de uso
 
 ### Crear un usuario
@@ -74,7 +84,7 @@ curl -X POST http://localhost:3000/api/users \
   -H "Content-Type: application/json" \
   -d '{
     "id": "123e4567-e89b-12d3-a456-426614174000",
-    "fullName": "Juan Pérez",
+    "full_name": "Juan Pérez",
     "email": "juan@example.com",
     "role": "USER"
   }'
@@ -88,7 +98,7 @@ curl -X POST http://localhost:3000/api/devices \
   -d '{
     "name": "Sensor de Temperatura",
     "type": "IoT Device",
-    "userId": "123e4567-e89b-12d3-a456-426614174000"
+    "profile_id": "123e4567-e89b-12d3-a456-426614174000"
   }'
 ```
 
@@ -98,9 +108,12 @@ curl -X POST http://localhost:3000/api/devices \
 curl -X POST http://localhost:3000/api/locations \
   -H "Content-Type: application/json" \
   -d '{
+    "name": "Casa",
     "latitude": -34.6037,
     "longitude": -58.3816,
-    "address": "Buenos Aires, Argentina"
+    "address": "Buenos Aires, Argentina",
+    "radius": 100,
+    "is_active": true
   }'
 ```
 
@@ -111,9 +124,24 @@ curl -X POST http://localhost:3000/api/sensors \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Sensor Temperatura",
-    "dataType": "temperature",
+    "data_type": "temperature",
     "unit": "°C",
-    "deviceId": "device-uuid-here"
+    "device_id": "device-uuid-here"
+  }'
+### Crear un evento de proximidad
+
+```bash
+curl -X POST http://localhost:3000/api/proximity-events \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "ENTER",
+    "latitude": -34.6037,
+    "longitude": -58.3816,
+    "distance": 50,
+    "home_location_id": "location-uuid-here",
+    "home_location_name": "Casa",
+    "device_id": "device-uuid-here",
+    "user_id": "123e4567-e89b-12d3-a456-426614174000"
   }'
 ```
 
@@ -127,7 +155,6 @@ La aplicación utiliza las siguientes tablas en Supabase:
 - `email` (TEXT) - Email único
 - `avatar_url` (TEXT) - URL del avatar (opcional)
 - `role` (user_role) - Rol del usuario (USER/ADMIN)
-- `location_id` (UUID) - Foreign Key a locations (opcional)
 - `created_at` (TIMESTAMP)
 - `updated_at` (TIMESTAMP)
 
@@ -135,14 +162,18 @@ La aplicación utiliza las siguientes tablas en Supabase:
 - `id` (UUID) - Primary Key
 - `name` (TEXT) - Nombre del dispositivo
 - `type` (TEXT) - Tipo de dispositivo
-- `user_id` (UUID) - Foreign Key a profiles
+- `profile_id` (UUID) - Foreign Key a profiles
 - `created_at` (TIMESTAMP)
 
 ### locations
 - `id` (UUID) - Primary Key
+- `name` (TEXT) - Nombre de la ubicación
 - `latitude` (DOUBLE) - Latitud
 - `longitude` (DOUBLE) - Longitud
-- `address` (TEXT) - Dirección (opcional)
+- `address` (TEXT) - Dirección
+- `radius` (NUMBER) - Radio en metros
+- `is_active` (BOOLEAN) - Si la ubicación está activa
+- `profile_id` (UUID) - Foreign Key a profiles (opcional)
 - `created_at` (TIMESTAMP)
 
 ### sensors
@@ -151,6 +182,18 @@ La aplicación utiliza las siguientes tablas en Supabase:
 - `data_type` (TEXT) - Tipo de datos
 - `unit` (TEXT) - Unidad de medida
 - `device_id` (UUID) - Foreign Key a devices
+- `created_at` (TIMESTAMP)
+
+### proximity_events
+- `id` (UUID) - Primary Key
+- `type` (TEXT) - Tipo de evento (ENTER/EXIT)
+- `latitude` (DOUBLE) - Latitud del evento
+- `longitude` (DOUBLE) - Longitud del evento
+- `distance` (NUMBER) - Distancia en metros
+- `home_location_id` (UUID) - Foreign Key a locations
+- `home_location_name` (TEXT) - Nombre de la ubicación de casa
+- `device_id` (UUID) - Foreign Key a devices (opcional)
+- `user_id` (UUID) - Foreign Key a profiles (opcional)
 - `created_at` (TIMESTAMP)
 
 ## Arquitectura

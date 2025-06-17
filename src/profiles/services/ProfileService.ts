@@ -8,13 +8,11 @@ type ProfileInsert = Database['public']['Tables']['profiles']['Insert'];
 type ProfileUpdate = Database['public']['Tables']['profiles']['Update'];
 
 @Injectable()
-export class UserService {
-  async getAllUsers(): Promise<User[]> {
+export class UserService {  async getAllUsers(): Promise<User[]> {
     const { data, error } = await supabase
       .from('profiles')
       .select(`
         *,
-        location:locations(*),
         devices(*)
       `);
 
@@ -30,7 +28,6 @@ export class UserService {
       .from('profiles')
       .select(`
         *,
-        location:locations(*),
         devices(*)
       `)
       .eq('id', id)
@@ -48,7 +45,6 @@ export class UserService {
       .from('profiles')
       .select(`
         *,
-        location:locations(*),
         devices(*)
       `)
       .eq('email', email)
@@ -59,8 +55,7 @@ export class UserService {
     }
 
     return data as any;
-  }
-  async createUser(userData: Partial<User>): Promise<User> {
+  }async createUser(userData: Partial<User>): Promise<User> {
     // Check if email already exists
     if (userData.email) {
       const { data: existingUser } = await supabase
@@ -74,17 +69,16 @@ export class UserService {
       }
     }
 
-    if (!userData.id || !userData.fullName || !userData.email) {
-      throw new Error('Missing required fields: id, fullName, email');
+    if (!userData.id || !userData.full_name || !userData.email) {
+      throw new Error('Missing required fields: id, full_name, email');
     }
 
     const insertData: ProfileInsert = {
       id: userData.id,
-      full_name: userData.fullName,
+      full_name: userData.full_name,
       email: userData.email,
-      avatar_url: userData.avatarUrl || null,
+      avatar_url: userData.avatar_url || null,
       role: userData.role || 'USER',
-      location_id: userData.location?.id || null,
     };
 
     const { data, error } = await supabase
@@ -99,15 +93,13 @@ export class UserService {
 
     return this.getUserById(data.id);
   }
-
   async updateUser(id: string, userData: Partial<User>): Promise<User> {
     const updateData: ProfileUpdate = {};
 
-    if (userData.fullName) updateData.full_name = userData.fullName;
+    if (userData.full_name) updateData.full_name = userData.full_name;
     if (userData.email) updateData.email = userData.email;
-    if (userData.avatarUrl !== undefined) updateData.avatar_url = userData.avatarUrl;
+    if (userData.avatar_url !== undefined) updateData.avatar_url = userData.avatar_url;
     if (userData.role) updateData.role = userData.role;
-    if (userData.location?.id !== undefined) updateData.location_id = userData.location?.id || null;
 
     const { error } = await supabase
       .from('profiles')

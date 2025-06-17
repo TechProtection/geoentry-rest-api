@@ -26,7 +26,6 @@ export class DeviceController {
   async getDevice(@Param('id') id: string): Promise<Device> {
     return await this.deviceService.getDeviceById(id);
   }
-
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo dispositivo' })
   @ApiResponse({ status: 201, description: 'Dispositivo creado exitosamente', type: Device })
@@ -35,11 +34,10 @@ export class DeviceController {
     const deviceData = {
       name: deviceDto.name,
       type: deviceDto.type,
-      user: { id: deviceDto.userId } as any
+      profile_id: deviceDto.profile_id
     };
     return await this.deviceService.createDevice(deviceData);
   }
-
   @Put(':id')
   @ApiOperation({ summary: 'Actualizar un dispositivo' })
   @ApiParam({ name: 'id', description: 'ID del dispositivo' })
@@ -52,7 +50,7 @@ export class DeviceController {
     const deviceData: any = {};
     if (deviceDto.name) deviceData.name = deviceDto.name;
     if (deviceDto.type) deviceData.type = deviceDto.type;
-    if (deviceDto.userId) deviceData.user = { id: deviceDto.userId };
+    if (deviceDto.profile_id) deviceData.profile_id = deviceDto.profile_id;
     
     return await this.deviceService.updateDevice(id, deviceData);
   }

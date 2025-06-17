@@ -24,7 +24,6 @@ export class LocationController {
   async getLocation(@Param('id') id: string): Promise<Location> {
     return await this.locationService.getLocationById(id);
   }
-
   @Post()
   @ApiOperation({ summary: 'Crear una nueva ubicación' })
   @ApiResponse({ status: 201, description: 'Ubicación creada exitosamente', type: Location })

@@ -8,13 +8,13 @@ export class SensorResponseDto {
   name: string;
 
   @ApiProperty({ description: 'Tipo de datos del sensor' })
-  dataType: string;
+  data_type: string;
 
   @ApiProperty({ description: 'Unidad de medida' })
   unit: string;
 
   @ApiProperty({ description: 'Fecha de creación' })
-  createdAt: Date;
+  created_at: string | null;
 }
 
 export class SensorWithDeviceResponseDto extends SensorResponseDto {
@@ -25,7 +25,7 @@ export class SensorWithDeviceResponseDto extends SensorResponseDto {
       id: { type: 'string' },
       name: { type: 'string' },
       type: { type: 'string' },
-      createdAt: { type: 'string', format: 'date-time' }
+      created_at: { type: 'string', format: 'date-time' }
     }
   })
   device: any;

@@ -1,4 +1,3 @@
-export enum Role {
-  USER = 'USER',
-  ADMIN = 'ADMIN'
-}
+import { Database } from '../../types/supabase';
+
+export type Role = Database['public']['Enums']['user_role'];

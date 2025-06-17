@@ -1,7 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
+import { Tables } from '../../types/supabase';
 
-export class Sensor {
+type SensorRow = Tables<'sensors'>;
+
+export class Sensor implements SensorRow {
   @ApiProperty({ description: 'ID único del sensor' })
   id: string;
 
@@ -11,12 +14,19 @@ export class Sensor {
 
   @ApiProperty({ description: 'Tipo de datos del sensor' })
   @IsString()
-  dataType: string;
+  data_type: string;
 
   @ApiProperty({ description: 'Unidad de medida' })
   @IsString()
   unit: string;
 
+  @ApiProperty({ description: 'ID del dispositivo al que pertenece' })
+  device_id: string;
+
+  @ApiProperty({ description: 'Fecha de creación' })
+  created_at: string | null;
+
+  // Relaciones (no están en Supabase types, pero las necesitamos para el modelo)
   @ApiProperty({ 
     description: 'Dispositivo al que pertenece el sensor',
     type: 'object',
@@ -24,11 +34,8 @@ export class Sensor {
       id: { type: 'string' },
       name: { type: 'string' },
       type: { type: 'string' },
-      createdAt: { type: 'string', format: 'date-time' }
+      created_at: { type: 'string', format: 'date-time' }
     }
   })
-  device: any;
-
-  @ApiProperty({ description: 'Fecha de creación' })
-  createdAt: Date;
+  device?: any;
 }
