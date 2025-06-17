@@ -5,7 +5,7 @@ import { User } from '../models/ProfileModel';
 import { CreateUserDto, UpdateUserDto } from '../dto/profile.dto';
 
 @ApiTags('profiles')
-@Controller('api/users')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

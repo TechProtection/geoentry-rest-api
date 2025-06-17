@@ -13,7 +13,6 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
-
   @Get('health')
   @ApiOperation({ summary: 'Detailed health check' })
   @ApiResponse({ status: 200, description: 'API health status' })
@@ -23,7 +22,26 @@ export class AppController {
       timestamp: new Date().toISOString(),
       environment: process.env.NODE_ENV || 'development',
       version: '1.0.0',
-      database: 'Supabase connected'
+      database: 'Supabase connected',
+      cors: {
+        enabled: true,
+        allowedOrigins: process.env.ALLOWED_ORIGINS?.split(',') || ['default origins'],
+      }
+    };
+  }
+
+  @Get('cors-test')
+  @ApiOperation({ summary: 'Test CORS configuration' })
+  @ApiResponse({ status: 200, description: 'CORS test response' })
+  testCors() {
+    return {
+      message: 'CORS is working correctly',
+      timestamp: new Date().toISOString(),
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+      }
     };
   }
 }

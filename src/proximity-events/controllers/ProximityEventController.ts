@@ -5,7 +5,7 @@ import { ProximityEvent } from '../models/ProximityEventModel';
 import { CreateProximityEventDto, UpdateProximityEventDto } from '../dto/proximity-event.dto';
 
 @ApiTags('proximity-events')
-@Controller('api/proximity-events')
+@Controller('proximity-events')
 export class ProximityEventController {
   constructor(private readonly proximityEventService: ProximityEventService) {}
 

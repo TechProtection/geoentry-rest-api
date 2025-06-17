@@ -5,7 +5,7 @@ import { Location } from '../models/LocationModel';
 import { CreateLocationDto, UpdateLocationDto } from '../dto/location.dto';
 
 @ApiTags('locations')
-@Controller('api/locations')
+@Controller('locations')
 export class LocationController {
   constructor(private readonly locationService: LocationService) {}
 

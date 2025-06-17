@@ -6,7 +6,7 @@ import { CreateSensorDto, UpdateSensorDto } from '../dto/sensor.dto';
 import { SensorWithDeviceResponseDto } from '../dto/sensorResponse.dto';
 
 @ApiTags('sensors')
-@Controller('api/sensors')
+@Controller('sensors')
 export class SensorController {
   constructor(private readonly sensorService: SensorService) {}
 

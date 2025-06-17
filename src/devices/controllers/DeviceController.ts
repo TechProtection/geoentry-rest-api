@@ -7,7 +7,7 @@ import { DeviceWithSensorsResponseDto } from '../dto/deviceResponse.dto';
 
 
 @ApiTags('devices')
-@Controller('api/devices')
+@Controller('devices')
 export class DeviceController {
   constructor(private readonly deviceService: DeviceService) {}
 
