@@ -23,9 +23,7 @@ async function bootstrap() {
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
   
-  const baseUrl = process.env.NODE_ENV === 'production' 
-    ? 'https://geoentry-rest-api.onrender.com' 
-    : `http://localhost:${port}`;
+  const baseUrl = 'https://geoentry-rest-api.onrender.com'
   
   console.log(`🚀 Application is running on: ${baseUrl}`);
   console.log(`📚 Swagger UI is available at: ${baseUrl}/swagger-ui`);
