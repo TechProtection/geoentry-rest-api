@@ -16,7 +16,6 @@ export class SwaggerConfig {
         },
         'JWT-auth'
       )
-      .addServer('http://localhost:3000', 'Servidor de desarrollo local')
       .addServer('https://geoentry-rest-api.onrender.com', 'Servidor de producción')
       .setContact(
         'GeoEntry API Support',
