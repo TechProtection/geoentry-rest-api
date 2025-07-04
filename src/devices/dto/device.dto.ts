@@ -2,6 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsUUID } from 'class-validator';
 
 export class CreateDeviceDto {
+  @ApiProperty({ description: 'ID único del dispositivo (UUID)', required: false })
+  @IsUUID()
+  id?: string;
+
   @ApiProperty({ description: 'Nombre del dispositivo' })
   @IsString()
   @IsNotEmpty()

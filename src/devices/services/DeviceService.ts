@@ -52,6 +52,11 @@ export class DeviceService {  async getAllDevices(): Promise<Device[]> {
       profile_id: deviceData.profile_id,
     };
 
+    // Si se proporciona un ID personalizado, incluirlo
+    if (deviceData.id) {
+      (insertData as any).id = deviceData.id;
+    }
+
     const { data, error } = await supabase
       .from('devices')
       .insert(insertData)
@@ -62,7 +67,8 @@ export class DeviceService {  async getAllDevices(): Promise<Device[]> {
       throw new Error(`Error creating device: ${error.message}`);
     }
 
-    return this.getDeviceById(data.id);
+    // Retornar directamente los datos sin hacer join complejo para evitar errores
+    return data as Device;
   }
 
   async updateDevice(id: string, deviceData: Partial<Device>): Promise<Device> {

@@ -32,6 +32,7 @@ export class DeviceController {
   @ApiResponse({ status: 400, description: 'Datos inválidos' })
   async createDevice(@Body() deviceDto: CreateDeviceDto): Promise<Device> {
     const deviceData = {
+      id: deviceDto.id, // Permitir ID personalizado
       name: deviceDto.name,
       type: deviceDto.type,
       profile_id: deviceDto.profile_id
