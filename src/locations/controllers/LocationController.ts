@@ -16,6 +16,15 @@ export class LocationController {
     return await this.locationService.getAllLocations();
   }
 
+  @Get('user/:userId')
+  @ApiOperation({ summary: 'Obtener ubicaciones por ID de usuario' })
+  @ApiParam({ name: 'userId', description: 'ID del usuario' })
+  @ApiResponse({ status: 200, description: 'Lista de ubicaciones del usuario', type: [Location] })
+  @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
+  async getLocationsByUser(@Param('userId') userId: string): Promise<Location[]> {
+    return await this.locationService.getLocationsByUser(userId);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Obtener ubicación por ID' })
   @ApiParam({ name: 'id', description: 'ID de la ubicación' })

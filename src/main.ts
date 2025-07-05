@@ -9,7 +9,10 @@ async function bootstrap() {
   
   app.setGlobalPrefix('api');
 
-  app.enableCors();
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  });
 
   // Habilitar validación global
   app.useGlobalPipes(new ValidationPipe({

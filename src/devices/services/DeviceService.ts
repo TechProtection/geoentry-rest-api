@@ -8,7 +8,27 @@ type DeviceInsert = Database['public']['Tables']['devices']['Insert'];
 type DeviceUpdate = Database['public']['Tables']['devices']['Update'];
 
 @Injectable()
-export class DeviceService {  async getAllDevices(): Promise<Device[]> {
+export class DeviceService {
+  
+  async getDevicesByUser(userId: string): Promise<Device[]> {
+    // Obtener dispositivos del usuario específico
+    const { data, error } = await supabase
+      .from('devices')
+      .select(`
+        *,
+        profile:profiles(*),
+        sensors(*)
+      `)
+      .eq('profile_id', userId);
+
+    if (error) {
+      throw new Error(`Error fetching user devices: ${error.message}`);
+    }
+
+    return data as any[];
+  }
+
+  async getAllDevices(): Promise<Device[]> {
     const { data, error } = await supabase
       .from('devices')
       .select(`

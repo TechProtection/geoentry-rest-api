@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { Controller, Get, Post, Put, Delete, Body, Param, Headers } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiHeader } from '@nestjs/swagger';
 import { DeviceService } from '../services/DeviceService';
 import { Device } from '../models/DeviceModel';
 import { CreateDeviceDto, UpdateDeviceDto } from '../dto/device.dto';
@@ -16,6 +16,15 @@ export class DeviceController {
   @ApiResponse({ status: 200, description: 'Lista de dispositivos', type: [DeviceWithSensorsResponseDto] })
   async getAllDevices(): Promise<Device[]> {
     return await this.deviceService.getAllDevices();
+  }
+
+  @Get('user/:userId')
+  @ApiOperation({ summary: 'Obtener dispositivos por ID de usuario' })
+  @ApiParam({ name: 'userId', description: 'ID del usuario' })
+  @ApiResponse({ status: 200, description: 'Lista de dispositivos del usuario', type: [DeviceWithSensorsResponseDto] })
+  @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
+  async getDevicesByUser(@Param('userId') userId: string): Promise<Device[]> {
+    return await this.deviceService.getDevicesByUser(userId);
   }
 
   @Get(':id')

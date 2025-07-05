@@ -9,6 +9,24 @@ type LocationUpdate = Database['public']['Tables']['locations']['Update'];
 
 @Injectable()
 export class LocationService {
+  
+  async getLocationsByUser(userId: string): Promise<Location[]> {
+    // Obtener ubicaciones del usuario específico
+    const { data, error } = await supabase
+      .from('locations')
+      .select(`
+        *,
+        profile:profiles(*)
+      `)
+      .eq('profile_id', userId);
+
+    if (error) {
+      throw new Error(`Error fetching user locations: ${error.message}`);
+    }
+
+    return data as any[];
+  }
+
   async getAllLocations(): Promise<Location[]> {
     const { data, error } = await supabase
       .from('locations')
