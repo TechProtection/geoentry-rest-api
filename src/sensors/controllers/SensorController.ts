@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Patch } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { SensorService } from '../services/SensorService';
 import { Sensor } from '../models/SensorModel';
-import { CreateSensorDto, UpdateSensorDto } from '../dto/sensor.dto';
+import { CreateSensorDto, UpdateSensorDto, UpdateSensorStatusDto, CreateSensorForUserDto } from '../dto/sensor.dto';
 import { SensorWithDeviceResponseDto } from '../dto/sensorResponse.dto';
 
 @ApiTags('sensors')
@@ -40,14 +40,15 @@ export class SensorController {
   async createSensor(@Body() sensorDto: CreateSensorDto): Promise<Sensor> {
     const sensorData = {
       name: sensorDto.name,
-      data_type: sensorDto.data_type,
-      unit: sensorDto.unit,
-      device_id: sensorDto.device_id
+      sensor_type: sensorDto.sensor_type,
+      isActive: sensorDto.isActive,
+      user_id: sensorDto.user_id,
+      status: sensorDto.status || 'off'
     };
     return await this.sensorService.createSensor(sensorData);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @ApiOperation({ summary: 'Actualizar un sensor' })
   @ApiParam({ name: 'id', description: 'ID del sensor' })
   @ApiResponse({ status: 200, description: 'Sensor actualizado exitosamente', type: Sensor })
@@ -57,11 +58,68 @@ export class SensorController {
     @Body() sensorDto: UpdateSensorDto
   ): Promise<Sensor> {    const sensorData: any = {};
     if (sensorDto.name) sensorData.name = sensorDto.name;
-    if (sensorDto.data_type) sensorData.data_type = sensorDto.data_type;
-    if (sensorDto.unit) sensorData.unit = sensorDto.unit;
-    if (sensorDto.device_id) sensorData.device_id = sensorDto.device_id;
+    if (sensorDto.sensor_type) sensorData.sensor_type = sensorDto.sensor_type;
+    if (sensorDto.isActive !== undefined) sensorData.isActive = sensorDto.isActive;
+    if (sensorDto.status) sensorData.status = sensorDto.status;
     
     return await this.sensorService.updateSensor(id, sensorData);
+  }
+
+  @Patch(':id/status')
+  @ApiOperation({ summary: 'Actualizar estado de un sensor' })
+  @ApiParam({ name: 'id', description: 'ID del sensor' })
+  @ApiResponse({ status: 200, description: 'Estado del sensor actualizado exitosamente', type: Sensor })
+  @ApiResponse({ status: 404, description: 'Sensor no encontrado' })
+  async updateSensorStatus(
+    @Param('id') id: string,
+    @Body() statusData: UpdateSensorStatusDto
+  ): Promise<Sensor> {
+    return await this.sensorService.updateSensorStatus(id, statusData.status);
+  }
+
+  @Get('user/:userId/type/:dataType')
+  @ApiOperation({ summary: 'Obtener sensores por usuario y tipo' })
+  @ApiParam({ name: 'userId', description: 'ID del usuario' })
+  @ApiParam({ 
+    name: 'dataType', 
+    description: 'Tipo de sensor',
+    enum: ['led_tv', 'smart_light', 'air_conditioner', 'coffee_maker']
+  })
+  @ApiResponse({ status: 200, description: 'Sensores encontrados', type: [Sensor] })
+  async getSensorsByUserAndType(
+    @Param('userId') userId: string,
+    @Param('dataType') dataType: 'led_tv' | 'smart_light' | 'air_conditioner' | 'coffee_maker'
+  ): Promise<Sensor[]> {
+    return await this.sensorService.getSensorsByUserAndType(userId, dataType);
+  }
+
+  @Get('user/:userId')
+  @ApiOperation({ summary: 'Obtener sensores por usuario' })
+  @ApiParam({ name: 'userId', description: 'ID del usuario' })
+  @ApiResponse({ status: 200, description: 'Sensores encontrados', type: [Sensor] })
+  async getSensorsByUser(
+    @Param('userId') userId: string
+  ): Promise<Sensor[]> {
+    return await this.sensorService.getSensorsByUser(userId);
+  }
+
+  @Post('user/:userId')
+  @ApiOperation({ summary: 'Crear un nuevo sensor para un usuario' })
+  @ApiParam({ name: 'userId', description: 'ID del usuario' })
+  @ApiResponse({ status: 201, description: 'Sensor creado exitosamente para el usuario', type: Sensor })
+  @ApiResponse({ status: 400, description: 'Datos inválidos' })
+  @ApiResponse({ status: 404, description: 'Usuario no encontrado o sin dispositivo' })
+  async createSensorForUser(
+    @Param('userId') userId: string,
+    @Body() sensorDto: CreateSensorForUserDto
+  ): Promise<Sensor> {
+    const sensorData = {
+      name: sensorDto.name,
+      sensor_type: sensorDto.sensor_type,
+      isActive: sensorDto.isActive,
+      status: sensorDto.status || 'off'
+    };
+    return await this.sensorService.createSensorForUser(userId, sensorData);
   }
 
   @Delete(':id')
