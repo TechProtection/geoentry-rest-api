@@ -16,8 +16,7 @@ export class DeviceService {
       .from('devices')
       .select(`
         *,
-        profile:profiles(*),
-        sensors(*)
+        profile:profiles(*)
       `)
       .eq('profile_id', userId);
 
@@ -33,8 +32,7 @@ export class DeviceService {
       .from('devices')
       .select(`
         *,
-        profile:profiles(*),
-        sensors(*)
+        profile:profiles(*)
       `);
 
     if (error) {
@@ -49,8 +47,7 @@ export class DeviceService {
       .from('devices')
       .select(`
         *,
-        profile:profiles(*),
-        sensors(*)
+        profile:profiles(*)
       `)
       .eq('id', id)
       .single();
