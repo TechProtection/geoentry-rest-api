@@ -12,10 +12,7 @@ export class SensorRepository {
   async findAll(): Promise<Sensor[]> {
     const { data, error } = await supabase
       .from('sensors')
-      .select(`
-        *,
-        device:devices(*)
-      `);
+      .select('*');
 
     if (error) {
       throw new Error(`Error fetching sensors: ${error.message}`);
@@ -27,10 +24,7 @@ export class SensorRepository {
   async findById(id: string): Promise<Sensor | null> {
     const { data, error } = await supabase
       .from('sensors')
-      .select(`
-        *,
-        device:devices(*)
-      `)
+      .select('*')
       .eq('id', id)
       .single();
 
@@ -45,10 +39,7 @@ export class SensorRepository {
     const { data, error } = await supabase
       .from('sensors')
       .insert(sensorData)
-      .select(`
-        *,
-        device:devices(*)
-      `)
+      .select('*')
       .single();
 
     if (error) {
@@ -63,10 +54,7 @@ export class SensorRepository {
       .from('sensors')
       .update(sensorData)
       .eq('id', id)
-      .select(`
-        *,
-        device:devices(*)
-      `)
+      .select('*')
       .single();
 
     if (error) {
@@ -85,33 +73,28 @@ export class SensorRepository {
     return !error;
   }
 
-  async findByDeviceId(deviceId: string): Promise<Sensor[]> {
+  async findByUserId(userId: string): Promise<Sensor[]> {
     const { data, error } = await supabase
       .from('sensors')
-      .select(`
-        *,
-        device:devices(*)
-      `)
-      .eq('device_id', deviceId);
+      .select('*')
+      .eq('user_id', userId);
 
     if (error) {
-      throw new Error(`Error fetching sensors by device: ${error.message}`);
+      throw new Error(`Error fetching sensors by user: ${error.message}`);
     }
 
     return data as any[];
   }
 
-  async findByDataType(dataType: string): Promise<Sensor[]> {
+  async findByUserAndType(userId: string, sensorType: 'led_tv' | 'smart_light' | 'air_conditioner' | 'coffee_maker'): Promise<Sensor[]> {
     const { data, error } = await supabase
       .from('sensors')
-      .select(`
-        *,
-        device:devices(*)
-      `)
-      .eq('data_type', dataType);
+      .select('*')
+      .eq('user_id', userId)
+      .eq('sensor_type', sensorType);
 
     if (error) {
-      throw new Error(`Error fetching sensors by data type: ${error.message}`);
+      throw new Error(`Error fetching sensors by user and type: ${error.message}`);
     }
 
     return data as any[];

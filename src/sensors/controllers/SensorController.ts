@@ -42,8 +42,7 @@ export class SensorController {
       name: sensorDto.name,
       sensor_type: sensorDto.sensor_type,
       isActive: sensorDto.isActive,
-      user_id: sensorDto.user_id,
-      status: sensorDto.status || 'off'
+      user_id: sensorDto.user_id
     };
     return await this.sensorService.createSensor(sensorData);
   }
@@ -56,11 +55,11 @@ export class SensorController {
   async updateSensor(
     @Param('id') id: string,
     @Body() sensorDto: UpdateSensorDto
-  ): Promise<Sensor> {    const sensorData: any = {};
+  ): Promise<Sensor> {
+    const sensorData: any = {};
     if (sensorDto.name) sensorData.name = sensorDto.name;
     if (sensorDto.sensor_type) sensorData.sensor_type = sensorDto.sensor_type;
     if (sensorDto.isActive !== undefined) sensorData.isActive = sensorDto.isActive;
-    if (sensorDto.status) sensorData.status = sensorDto.status;
     
     return await this.sensorService.updateSensor(id, sensorData);
   }
@@ -74,7 +73,7 @@ export class SensorController {
     @Param('id') id: string,
     @Body() statusData: UpdateSensorStatusDto
   ): Promise<Sensor> {
-    return await this.sensorService.updateSensorStatus(id, statusData.status);
+    return await this.sensorService.updateSensorStatus(id, statusData.isActive);
   }
 
   @Get('user/:userId/type/:dataType')
@@ -116,8 +115,7 @@ export class SensorController {
     const sensorData = {
       name: sensorDto.name,
       sensor_type: sensorDto.sensor_type,
-      isActive: sensorDto.isActive,
-      status: sensorDto.status || 'off'
+      isActive: sensorDto.isActive
     };
     return await this.sensorService.createSensorForUser(userId, sensorData);
   }

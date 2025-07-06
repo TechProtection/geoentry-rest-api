@@ -12,31 +12,19 @@ export class SensorService {
   async getAllSensors(): Promise<Sensor[]> {
     const { data, error } = await supabase
       .from('sensors')
-      .select(`
-        *,
-        profiles(*)
-      `);
+      .select('*');
 
     if (error) {
       throw new Error(`Error fetching sensors: ${error.message}`);
     }
 
-    // Agregar status por defecto a cada sensor
-    const sensorsWithStatus = (data as any[]).map(sensor => ({
-      ...sensor,
-      status: 'off' // Por defecto todos los sensores están apagados
-    }));
-
-    return sensorsWithStatus;
+    return data as Sensor[];
   }
 
   async getSensorById(id: string): Promise<Sensor> {
     const { data, error } = await supabase
       .from('sensors')
-      .select(`
-        *,
-        profiles(*)
-      `)
+      .select('*')
       .eq('id', id)
       .single();
 
@@ -44,13 +32,7 @@ export class SensorService {
       throw new NotFoundException(`Sensor with ID ${id} not found`);
     }
 
-    // Agregar status por defecto
-    const sensorWithStatus = {
-      ...data,
-      status: 'off' // Por defecto el sensor está apagado
-    };
-
-    return sensorWithStatus as any;
+    return data as Sensor;
   }
   async createSensor(sensorData: Partial<Sensor>): Promise<Sensor> {
     if (!sensorData.name || !sensorData.sensor_type || sensorData.isActive === undefined || !sensorData.user_id) {
@@ -75,13 +57,7 @@ export class SensorService {
       throw new Error(`Error creating sensor: ${error.message}`);
     }
 
-    // Crear un objeto con el status por defecto
-    const sensorWithStatus = {
-      ...data,
-      status: sensorData.status || 'off'
-    };
-
-    return sensorWithStatus as any;
+    return data as Sensor;
   }
 
   async createSensorForUser(userId: string, sensorData: Partial<Sensor>): Promise<Sensor> {
@@ -100,23 +76,14 @@ export class SensorService {
     const { data, error } = await supabase
       .from('sensors')
       .insert(insertData)
-      .select(`
-        *,
-        profiles(*)
-      `)
+      .select('*')
       .single();
 
     if (error) {
       throw new Error(`Error creating sensor for user: ${error.message}`);
     }
 
-    // Crear un objeto con el status por defecto
-    const sensorWithStatus = {
-      ...data,
-      status: sensorData.status || 'off'
-    };
-
-    return sensorWithStatus as any;
+    return data as Sensor;
   }
 
   async updateSensor(id: string, sensorData: Partial<Sensor>): Promise<Sensor> {
@@ -138,36 +105,31 @@ export class SensorService {
       throw new Error(`Error updating sensor: ${error.message}`);
     }
 
-    const updatedSensor = await this.getSensorById(id);
-    
-    // Si se está actualizando el status, agregarlo al resultado
-    if (sensorData.status !== undefined) {
-      (updatedSensor as any).status = sensorData.status;
-    }
-
-    return updatedSensor;
+    return await this.getSensorById(id);
   }
 
-  async updateSensorStatus(id: string, status: string): Promise<Sensor> {
-    // Verificar que el sensor existe
-    const sensor = await this.getSensorById(id);
-    
-    // Simular la actualización del status (ya que no está en la BD)
-    const sensorWithStatus = {
-      ...sensor,
-      status: status
+  async updateSensorStatus(id: string, isActive: boolean): Promise<Sensor> {
+    const updateData: SensorUpdate = {
+      isActive: isActive,
+      updated_at: new Date().toISOString(),
     };
 
-    return sensorWithStatus as any;
+    const { error } = await supabase
+      .from('sensors')
+      .update(updateData)
+      .eq('id', id);
+
+    if (error) {
+      throw new Error(`Error updating sensor status: ${error.message}`);
+    }
+
+    return await this.getSensorById(id);
   }
 
   async getSensorsByUserAndType(userId: string, sensorType: 'led_tv' | 'smart_light' | 'air_conditioner' | 'coffee_maker'): Promise<Sensor[]> {
     const { data, error } = await supabase
       .from('sensors')
-      .select(`
-        *,
-        profiles(*)
-      `)
+      .select('*')
       .eq('user_id', userId)
       .eq('sensor_type', sensorType);
 
@@ -175,35 +137,20 @@ export class SensorService {
       throw new Error(`Error fetching sensors by user and type: ${error.message}`);
     }
 
-    // Agregar status por defecto a cada sensor
-    const sensorsWithStatus = (data as any[]).map(sensor => ({
-      ...sensor,
-      status: 'off' // Por defecto todos los sensores están apagados
-    }));
-
-    return sensorsWithStatus;
+    return data as Sensor[];
   }
 
   async getSensorsByUser(userId: string): Promise<Sensor[]> {
     const { data, error } = await supabase
       .from('sensors')
-      .select(`
-        *,
-        profiles(*)
-      `)
+      .select('*')
       .eq('user_id', userId);
 
     if (error) {
       throw new Error(`Error fetching sensors by user: ${error.message}`);
     }
 
-    // Agregar status por defecto a cada sensor
-    const sensorsWithStatus = (data as any[]).map(sensor => ({
-      ...sensor,
-      status: 'off' // Por defecto todos los sensores están apagados
-    }));
-
-    return sensorsWithStatus;
+    return data as Sensor[];
   }
 
   async deleteSensor(id: string): Promise<void> {

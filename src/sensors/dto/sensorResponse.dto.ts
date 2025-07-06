@@ -7,26 +7,24 @@ export class SensorResponseDto {
   @ApiProperty({ description: 'Nombre del sensor' })
   name: string;
 
-  @ApiProperty({ description: 'Tipo de datos del sensor' })
-  data_type: string;
+  @ApiProperty({ 
+    description: 'Tipo de dispositivo', 
+    enum: ['led_tv', 'smart_light', 'air_conditioner', 'coffee_maker']
+  })
+  sensor_type: string;
 
-  @ApiProperty({ description: 'Unidad de medida' })
-  unit: string;
+  @ApiProperty({ description: 'Si el sensor está activo' })
+  isActive: boolean;
+
+  @ApiProperty({ description: 'ID del usuario propietario' })
+  user_id: string;
 
   @ApiProperty({ description: 'Fecha de creación' })
   created_at: string | null;
+
+  @ApiProperty({ description: 'Fecha de última actualización' })
+  updated_at: string | null;
 }
 
-export class SensorWithDeviceResponseDto extends SensorResponseDto {
-  @ApiProperty({ 
-    description: 'Dispositivo al que pertenece el sensor',
-    type: 'object',
-    properties: {
-      id: { type: 'string' },
-      name: { type: 'string' },
-      type: { type: 'string' },
-      created_at: { type: 'string', format: 'date-time' }
-    }
-  })
-  device: any;
-}
+// Mantener para compatibilidad con controladores existentes
+export class SensorWithDeviceResponseDto extends SensorResponseDto {}

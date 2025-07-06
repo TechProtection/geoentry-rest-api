@@ -24,17 +24,6 @@ export class CreateSensorDto {
   @IsUUID()
   @IsNotEmpty()
   user_id: string;
-
-  @ApiProperty({ 
-    description: 'Estado inicial del sensor', 
-    required: false, 
-    enum: ['on', 'off'], 
-    default: 'off' 
-  })
-  @IsOptional()
-  @IsString()
-  @IsIn(['on', 'off'])
-  status?: string;
 }
 
 export class UpdateSensorDto {
@@ -57,28 +46,16 @@ export class UpdateSensorDto {
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;
-
-  @ApiProperty({ 
-    description: 'Estado del sensor', 
-    required: false, 
-    enum: ['on', 'off'] 
-  })
-  @IsOptional()
-  @IsString()
-  @IsIn(['on', 'off'])
-  status?: string;
 }
 
 export class UpdateSensorStatusDto {
   @ApiProperty({ 
-    description: 'Estado del sensor', 
-    enum: ['on', 'off'],
-    example: 'on'
+    description: 'Estado activo del sensor', 
+    example: true
   })
-  @IsString()
+  @IsBoolean()
   @IsNotEmpty()
-  @IsIn(['on', 'off'])
-  status: string;
+  isActive: boolean;
 }
 
 export class CreateSensorForUserDto {
@@ -99,15 +76,4 @@ export class CreateSensorForUserDto {
   @ApiProperty({ description: 'Si el sensor está activo', default: true })
   @IsBoolean()
   isActive: boolean;
-
-  @ApiProperty({ 
-    description: 'Estado inicial del sensor', 
-    required: false, 
-    enum: ['on', 'off'], 
-    default: 'off' 
-  })
-  @IsOptional()
-  @IsString()
-  @IsIn(['on', 'off'])
-  status?: string;
 }

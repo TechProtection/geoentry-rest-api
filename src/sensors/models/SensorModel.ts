@@ -30,27 +30,4 @@ export class Sensor implements SensorRow {
 
   @ApiProperty({ description: 'Fecha de última actualización' })
   updated_at: string | null;
-
-  // Campo virtual para estado actual (no está en BD)
-  @ApiProperty({ 
-    description: 'Estado actual del sensor (on/off para control)', 
-    required: false,
-    example: 'off'
-  })
-  @IsOptional()
-  @IsString()
-  status?: string;
-
-  // Relaciones (no están en Supabase types, pero las necesitamos para el modelo)
-  @ApiProperty({ 
-    description: 'Dispositivo al que pertenece el sensor',
-    type: 'object',
-    properties: {
-      id: { type: 'string' },
-      name: { type: 'string' },
-      type: { type: 'string' },
-      created_at: { type: 'string', format: 'date-time' }
-    }
-  })
-  device?: any;
 }
