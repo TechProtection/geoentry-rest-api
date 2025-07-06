@@ -65,6 +65,23 @@ export class SensorService {
       throw new Error('Missing required fields: name, sensor_type, isActive');
     }
 
+    // Verificar si el usuario ya tiene un sensor de este tipo
+    const { data: existingSensor, error: checkError } = await supabase
+      .from('sensors')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('sensor_type', sensorData.sensor_type)
+      .single();
+
+    if (checkError && checkError.code !== 'PGRST116') {
+      // PGRST116 = no rows found, que es lo que esperamos
+      throw new Error(`Error checking existing sensors: ${checkError.message}`);
+    }
+
+    if (existingSensor) {
+      throw new Error(`Ya tienes un sensor de tipo ${sensorData.sensor_type}. Solo se permite uno por tipo.`);
+    }
+
     const insertData: SensorInsert = {
       name: sensorData.name,
       sensor_type: sensorData.sensor_type,
@@ -162,5 +179,25 @@ export class SensorService {
     if (error) {
       throw new NotFoundException(`Sensor with ID ${id} not found`);
     }
+  }
+
+  async getAvailableSensorTypes(userId: string): Promise<string[]> {
+    // Tipos de sensores permitidos
+    const allTypes: string[] = ['led_tv', 'smart_light', 'air_conditioner', 'coffee_maker'];
+    
+    // Obtener tipos que el usuario ya tiene
+    const { data: existingSensors, error } = await supabase
+      .from('sensors')
+      .select('sensor_type')
+      .eq('user_id', userId);
+
+    if (error) {
+      throw new Error(`Error fetching existing sensor types: ${error.message}`);
+    }
+
+    const existingTypes = existingSensors.map(sensor => sensor.sensor_type as string);
+    
+    // Retornar tipos que no tiene
+    return allTypes.filter(type => !existingTypes.includes(type));
   }
 }

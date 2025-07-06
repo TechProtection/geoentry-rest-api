@@ -128,4 +128,26 @@ export class SensorController {
   async deleteSensor(@Param('id') id: string): Promise<void> {
     return await this.sensorService.deleteSensor(id);
   }
+
+  @Get('user/:userId/available-types')
+  @ApiOperation({ summary: 'Obtener tipos de sensores disponibles para un usuario' })
+  @ApiParam({ name: 'userId', description: 'ID del usuario (UUID)' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Lista de tipos de sensores que el usuario puede agregar', 
+    schema: {
+      type: 'object',
+      properties: {
+        availableTypes: {
+          type: 'array',
+          items: { type: 'string' },
+          example: ['led_tv', 'air_conditioner']
+        }
+      }
+    }
+  })
+  async getAvailableSensorTypes(@Param('userId') userId: string): Promise<{ availableTypes: string[] }> {
+    const availableTypes = await this.sensorService.getAvailableSensorTypes(userId);
+    return { availableTypes };
+  }
 }
